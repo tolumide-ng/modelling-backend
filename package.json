@@ -17,7 +17,10 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pg": "^8.6.0",
+    "sequelize": "^6.6.2",
+    "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.16",
@@ -26,6 +29,7 @@
     "@types/faker": "^5.5.1",
     "@types/mocha": "^8.2.2",
     "@types/node": "^14.14.37",
+    "@types/sequelize": "^4.28.9",
     "@types/sinon": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
