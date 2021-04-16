@@ -38,6 +38,7 @@ export class ConversionMiddleware extends ResponseGenerator {
         ) => {
             if (this.mimeTypes.includes(file.mimetype)) {
                 cb(null, true);
+                req.fileName = file.filename;
             } else {
                 ResponseGenerator.sendError(
                     res,
@@ -63,7 +64,7 @@ export class ConversionMiddleware extends ResponseGenerator {
         // ATTACH THE BUCKET URL TO REQ.BUCKETURL
         // CALL NEXT
 
-        // req.bucketUrl = "urlWhereImageIsStored";
+        req.bucketUrl = "urlWhereImageIsStored";
 
         next();
     }

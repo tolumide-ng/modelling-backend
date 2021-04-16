@@ -15,8 +15,10 @@ export class Upload extends Model {
 }
 Upload.init(
     {
-        imageUrl: DataTypes.STRING,
-        imageId: DataTypes.UUID,
+        fileName: DataTypes.STRING,
+        fileUrl: DataTypes.STRING,
+        fileId: DataTypes.UUID,
+        convertTo: DataTypes.STRING,
     },
     {
         sequelize,

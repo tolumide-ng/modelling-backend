@@ -8,12 +8,19 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            imageUrl: {
+            fileUrl: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            fileName: {
                 type: Sequelize.STRING,
             },
-            imageId: {
+            fileId: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV1,
+            },
+            convertTo: {
+                type: Sequelize.STRING,
             },
             createdAt: {
                 allowNull: false,
