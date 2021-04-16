@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { ConversionMiddleware } from "./index.middleware";
+import { ConversionController } from "../../../controllers/conversion";
 
 const router = Router();
 
-// const uploadMiddleWare = new ConversionMiddleware();
-
-console.log("==========================================");
-
-router.post("/upload", ConversionMiddleware.uploadHandler);
+router.post(
+    "/upload",
+    ConversionMiddleware.uploadHandler,
+    ConversionController.uploadFile,
+);
 
 export default router;

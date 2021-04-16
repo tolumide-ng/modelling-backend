@@ -7,6 +7,8 @@ export class ConversionMiddleware extends ResponseGenerator {
 
     static maxSize = 10 * 1024 * 1024;
 
+    static convertTargets = ["step", "stl", "iges"];
+
     static multer = multer({
         storage: multer.memoryStorage(),
         limits: {
@@ -66,5 +68,15 @@ export class ConversionMiddleware extends ResponseGenerator {
         next();
     }
 
-    static async fileMiddleWare(req: Request, res: Response) {}
+    static async validateConvertRequest(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) {
+        if (!this.convertTargets.includes(req.params.target)) {
+            return this.sendError(res, 415, "Usupported Media Target");
+        }
+
+        next();
+    }
 }

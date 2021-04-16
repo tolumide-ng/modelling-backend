@@ -17,9 +17,6 @@ app.use(cors());
 Routes(app);
 
 app.use("*", (req, res) => {
-    console.log("THE URL", req.headers);
-    console.log("the req url", req.url);
-    console.log("THE BODY", req.body);
     ResponseGenerator.sendError(res, 404, "Page Not Found");
 });
 
