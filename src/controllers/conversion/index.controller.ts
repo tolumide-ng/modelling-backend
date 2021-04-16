@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
-import { Upload } from "../../database/models/upload";
 import { BaseRepository } from "../../baseRepository";
+import * as Upload from "../../database/models/upload";
 
 export class ConversionController extends ResponseGenerator {
     static CALL_INTERVAL = 5000;
