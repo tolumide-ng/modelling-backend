@@ -5,6 +5,8 @@ const router = Router();
 
 // const uploadMiddleWare = new ConversionMiddleware();
 
-router.post("/", ConversionMiddleware.uploadHandler);
+console.log("==========================================");
+
+router.post("/upload", ConversionMiddleware.uploadHandler);
 
 export default router;

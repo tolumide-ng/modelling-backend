@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "pretest": "NODE_ENV=test npm run set:test",
+    "set:test": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "test": "mocha -r ts-node/register src/**/*.test.ts",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint --init",
     "dev": "nodemon",
     "build": "rm -rf ./dist && tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate"
   },
   "keywords": [],
   "author": "",

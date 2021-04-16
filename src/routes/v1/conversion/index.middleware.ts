@@ -61,7 +61,7 @@ export class ConversionMiddleware extends ResponseGenerator {
         // ATTACH THE BUCKET URL TO REQ.BUCKETURL
         // CALL NEXT
 
-        req.bucketUrl = "urlWhereImageIsStored";
+        // req.bucketUrl = "urlWhereImageIsStored";
 
         next();
     }

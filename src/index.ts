@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { ResponseGenerator } from "./helpers/responseGenerator";
 import Routes from "./routes/v1";
+import multer from "multer";
 
 dotenv.config();
 
@@ -15,13 +16,10 @@ app.use(cors());
 
 Routes(app);
 
-app.get("/", function (req, res) {
-    res.json({ message: "Hllo world" });
-});
-
-app.listen(300);
-
 app.use("*", (req, res) => {
+    console.log("THE URL", req.headers);
+    console.log("the req url", req.url);
+    console.log("THE BODY", req.body);
     ResponseGenerator.sendError(res, 404, "Page Not Found");
 });
 
