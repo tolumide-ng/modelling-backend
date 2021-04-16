@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "pretest": "NODE_ENV=test npm run set:test",
+    "set:test": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "test": "mocha -r ts-node/register src/**/*.test.ts",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint --init",
     "dev": "nodemon",
     "build": "rm -rf ./dist && tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +21,9 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "multer": "^1.4.2",
     "pg": "^8.6.0",
+    "pg-hstore": "^2.3.3",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0"
   },
@@ -28,6 +33,7 @@
     "@types/express": "^4.17.11",
     "@types/faker": "^5.5.1",
     "@types/mocha": "^8.2.2",
+    "@types/multer": "^1.4.5",
     "@types/node": "^14.14.37",
     "@types/sequelize": "^4.28.9",
     "@types/sinon": "^10.0.0",
@@ -47,6 +53,7 @@
     "prettier": "2.2.1",
     "sinon": "^10.0.0",
     "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.6",
     "typescript": "^4.2.4"
   },
   "husky": {

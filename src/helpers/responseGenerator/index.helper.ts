@@ -13,10 +13,14 @@ export class ResponseGenerator extends Utils {
     static sendSuccess(
         res: Response,
         statusCode: number,
-        message: string,
         data: {},
+        headers?: {},
     ): Response {
-        const cleanResponse = this.removeNull({ message, data });
+        const cleanResponse = this.removeNull({ data });
+
+        if (headers) {
+            return res.writeHead(statusCode, headers).send(cleanResponse);
+        }
 
         return res.status(statusCode).send(cleanResponse);
     }

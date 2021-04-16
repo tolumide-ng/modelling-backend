@@ -3,6 +3,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { ResponseGenerator } from "./helpers/responseGenerator";
+import Routes from "./routes/v1";
+import multer from "multer";
 
 dotenv.config();
 
@@ -11,17 +14,10 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get("/", function (req, res) {
-    // console.log("the full request", req);
-    res.json({ message: "Hllo world" });
-});
-
-app.listen(300);
+Routes(app);
 
 app.use("*", (req, res) => {
-    res.status(404).json({
-        message: "Page Not Found",
-    });
+    ResponseGenerator.sendError(res, 404, "Page Not Found");
 });
 
 const PORT = process.env.PORT || 3000;

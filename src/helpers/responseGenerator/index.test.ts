@@ -19,7 +19,7 @@ describe("Response Generator Helper Class", () => {
         const mock = sinon.mock(Utils);
         mock.expects("removeNull").once();
 
-        ResponseGenerator.sendSuccess(res as Response, 200, "", {});
+        ResponseGenerator.sendSuccess(res as Response, 200, {});
 
         mock.verify();
         mock.restore();
