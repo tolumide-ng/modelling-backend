@@ -3,25 +3,46 @@ import path from "path";
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
-import * as Upload from "../../database/models/upload";
+import db from "../../database/models";
 
 export class ConversionController extends ResponseGenerator {
+    constructor() {
+        super();
+    }
+
     static CALL_INTERVAL = 5000;
 
     static async uploadFile(req: Request, res: Response) {
-        const { bucketUrl, fileName } = req;
+        const { originalname } = req.file;
 
-        const response = await BaseRepository.create(Upload, {
-            fileUrl: bucketUrl,
-            fileName: fileName,
-        });
+        try {
+            // const response = await BaseRepository.create(Upload, {
+            //     fileUrl: "locationOfWhereFileIsStoredOnGCBucket",
+            //     fileName: originalname,
+            // });
 
-        console.log("THE RESPOSNE FROM THE COMMAND REQUEST", response);
+            console.log(
+                "THE RECEIVED RESPONSE_--------------- \n\n",
+                db.sequelize.Upload,
+            );
 
-        this.sendSuccess(res, 201, {
-            fileUrl: "",
-            fileName: "",
-        });
+            return ResponseGenerator.sendSuccess(
+                res,
+                200,
+                "File Upload Success",
+            );
+        } catch (error) {
+            console.log("RECEIVED ERROR>>>>>>>>>>", error);
+        }
+
+        // console.log("THE RESPOSNE FROM THE COMMAND REQUEST", response);
+
+        // console.log("============", req.file);
+
+        // this.sendSuccess(res, 201, {
+        //     fileUrl: "",
+        //     fileName: "",
+        // });
     }
 
     static async convertFile(req: Request, res: Response) {
@@ -33,11 +54,11 @@ export class ConversionController extends ResponseGenerator {
 
         const { id: fileId, target } = req.params;
 
-        await BaseRepository.findAndUpdate(
-            Upload,
-            { converTo: target },
-            { fileId },
-        );
+        // await BaseRepository.findAndUpdate(
+        //     Upload,
+        //     { converTo: target },
+        //     { fileId },
+        // );
 
         let percentageConverted = 0;
 
@@ -61,9 +82,11 @@ export class ConversionController extends ResponseGenerator {
     }
 
     static async downloadFile(req: Request, res: Response) {
-        const response = await BaseRepository.findOneByField(Upload, {
-            fileId: req.params.id,
-        });
+        // const response = await BaseRepository.findOneByField(Upload, {
+        //     fileId: req.params.id,
+        // });
+
+        const response = { fileName: "", convertTo: "" };
 
         const theFile = `${response.fileName}.${response.convertTo}`;
         const absPath = path.join(__dirname, "/targets_files/", theFile);

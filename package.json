@@ -12,7 +12,9 @@
     "dev": "nodemon",
     "build": "rm -rf ./dist && tsc",
     "start": "npm run build && node dist/index.js",
-    "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate"
+    "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate",
+    "watch": "tsc --watch -p ./tsconfig.json",
+    "start:dev": "nodemon ./dist"
   },
   "keywords": [],
   "author": "",
