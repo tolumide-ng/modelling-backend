@@ -10,16 +10,14 @@ module.exports = {
             },
             fileUrl: {
                 type: Sequelize.STRING,
-                allowNull: false,
+            },
+            fileId: {
+                type: Sequelize.UUID,
             },
             fileName: {
                 type: Sequelize.STRING,
             },
-            fileId: {
-                type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV1,
-            },
-            convertTo: {
+            convertTp: {
                 type: Sequelize.STRING,
             },
             createdAt: {

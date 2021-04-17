@@ -12,7 +12,9 @@
     "dev": "nodemon",
     "build": "rm -rf ./dist && tsc",
     "start": "npm run build && node dist/index.js",
-    "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate"
+    "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate",
+    "watch": "tsc --watch -p ./tsconfig.json",
+    "start:dev": "nodemon ./dist"
   },
   "keywords": [],
   "author": "",
@@ -34,7 +36,7 @@
     "@types/faker": "^5.5.1",
     "@types/mocha": "^8.2.2",
     "@types/multer": "^1.4.5",
-    "@types/node": "^14.14.37",
+    "@types/node": "^14.14.41",
     "@types/sequelize": "^4.28.9",
     "@types/sinon": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^4.22.0",

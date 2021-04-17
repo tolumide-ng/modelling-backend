@@ -2,26 +2,37 @@ import fs from "fs";
 import path from "path";
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
-import { Upload } from "../../database/models/upload";
 import { BaseRepository } from "../../baseRepository";
+const Upload = require("../../database/models/upload");
 
 export class ConversionController extends ResponseGenerator {
+    constructor() {
+        super();
+    }
+
     static CALL_INTERVAL = 5000;
 
     static async uploadFile(req: Request, res: Response) {
-        const { bucketUrl, fileName } = req;
+        const { originalname } = req.file;
 
-        const response = await BaseRepository.create(Upload, {
-            fileUrl: bucketUrl,
-            fileName: fileName,
-        });
+        try {
+            const response = await BaseRepository.create(Upload, {
+                fileUrl: "locationOfWhereFileIsStoredOnGCBucket",
+                fileName: originalname,
+            });
 
-        console.log("THE RESPOSNE FROM THE COMMAND REQUEST", response);
+            const { id: fileId, fileName } = await response.get({
+                plain: true,
+            });
 
-        this.sendSuccess(res, 201, {
-            fileUrl: "",
-            fileName: "",
-        });
+            return ResponseGenerator.sendSuccess(res, 200, {
+                message: "File Upload Success",
+                fileId,
+                fileName,
+            });
+        } catch (error) {
+            return ResponseGenerator.sendError(res, 400, error);
+        }
     }
 
     static async convertFile(req: Request, res: Response) {
@@ -33,11 +44,11 @@ export class ConversionController extends ResponseGenerator {
 
         const { id: fileId, target } = req.params;
 
-        await BaseRepository.findAndUpdate(
-            Upload,
-            { converTo: target },
-            { fileId },
-        );
+        // await BaseRepository.findAndUpdate(
+        //     Upload,
+        //     { converTo: target },
+        //     { fileId },
+        // );
 
         let percentageConverted = 0;
 
@@ -61,9 +72,11 @@ export class ConversionController extends ResponseGenerator {
     }
 
     static async downloadFile(req: Request, res: Response) {
-        const response = await BaseRepository.findOneByField(Upload, {
-            fileId: req.params.id,
-        });
+        // const response = await BaseRepository.findOneByField(Upload, {
+        //     fileId: req.params.id,
+        // });
+
+        const response = { fileName: "", convertTo: "" };
 
         const theFile = `${response.fileName}.${response.convertTo}`;
         const absPath = path.join(__dirname, "/targets_files/", theFile);

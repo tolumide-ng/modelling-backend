@@ -1,12 +1,16 @@
 import { Utils } from "../utils";
-import { Response } from "express";
+import { Response, RequestHandler } from "express";
 
 export class ResponseGenerator extends Utils {
-    static sendError(
-        res: Response,
-        statusCode: number,
-        message: string,
-    ): Response {
+    // static sendError(
+    //     res: Response,
+    //     statusCode: number,
+    //     message: string,
+    // ): Response {
+    //     return res.status(statusCode).send({ message });
+    // }
+
+    static async sendError(res: Response, statusCode: number, message: string) {
         return res.status(statusCode).send({ message });
     }
 
@@ -23,5 +27,17 @@ export class ResponseGenerator extends Utils {
         }
 
         return res.status(statusCode).send(cleanResponse);
+    }
+
+    static composeHanlders(...middleware: RequestHandler[]): RequestHandler {
+        return middleware.reduce(
+            (currentMiddleware, nextMiddleware) => (req, res, next) =>
+                currentMiddleware(req, res, (err: any) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    nextMiddleware(req, res, next);
+                }),
+        );
     }
 }

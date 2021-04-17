@@ -1,9 +1,10 @@
-"use strict";
-
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../models";
+import { db } from "./index";
 
-export class Upload extends Model {
+const { sequelize } = db;
+
+// module.exports = (sequelize, DataTypes) => {
+class Upload extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,14 +16,24 @@ export class Upload extends Model {
 }
 Upload.init(
     {
-        fileName: DataTypes.STRING,
         fileUrl: DataTypes.STRING,
         fileId: DataTypes.UUID,
-        convertTo: DataTypes.STRING,
+        fileName: DataTypes.STRING,
+        convertTp: DataTypes.STRING,
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
+        },
     },
     {
         sequelize,
         modelName: "Upload",
     },
 );
-// return Upload;
+
+module.exports = Upload;
+// };
