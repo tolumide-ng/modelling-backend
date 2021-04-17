@@ -3,7 +3,7 @@ import path from "path";
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
-import db from "../../database/models";
+const Upload = require("../../database/models/upload");
 
 export class ConversionController extends ResponseGenerator {
     constructor() {
@@ -16,33 +16,23 @@ export class ConversionController extends ResponseGenerator {
         const { originalname } = req.file;
 
         try {
-            // const response = await BaseRepository.create(Upload, {
-            //     fileUrl: "locationOfWhereFileIsStoredOnGCBucket",
-            //     fileName: originalname,
-            // });
+            const response = await BaseRepository.create(Upload, {
+                fileUrl: "locationOfWhereFileIsStoredOnGCBucket",
+                fileName: originalname,
+            });
 
-            console.log(
-                "THE RECEIVED RESPONSE_--------------- \n\n",
-                db.sequelize.Upload,
-            );
+            const { id: fileId, fileName } = await response.get({
+                plain: true,
+            });
 
-            return ResponseGenerator.sendSuccess(
-                res,
-                200,
-                "File Upload Success",
-            );
+            return ResponseGenerator.sendSuccess(res, 200, {
+                message: "File Upload Success",
+                fileId,
+                fileName,
+            });
         } catch (error) {
-            console.log("RECEIVED ERROR>>>>>>>>>>", error);
+            return ResponseGenerator.sendError(res, 400, error);
         }
-
-        // console.log("THE RESPOSNE FROM THE COMMAND REQUEST", response);
-
-        // console.log("============", req.file);
-
-        // this.sendSuccess(res, 201, {
-        //     fileUrl: "",
-        //     fileName: "",
-        // });
     }
 
     static async convertFile(req: Request, res: Response) {

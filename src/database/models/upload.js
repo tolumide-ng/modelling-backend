@@ -1,28 +1,39 @@
-import { Model } from "sequelize";
+import { Model, DataTypes } from "sequelize";
+import { db } from "./index";
 
-module.exports = (sequelize, DataTypes) => {
-    class Upload extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
-        static associate(models) {
-            // define association here
-        }
+const { sequelize } = db;
+
+// module.exports = (sequelize, DataTypes) => {
+class Upload extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+        // define association here
     }
-    Upload.init(
-        {
-            fileUrl: DataTypes.STRING,
-            fileId: DataTypes.UUID,
-            fileName: DataTypes.STRING,
-            convertTp: DataTypes.STRING,
+}
+Upload.init(
+    {
+        fileUrl: DataTypes.STRING,
+        fileId: DataTypes.UUID,
+        fileName: DataTypes.STRING,
+        convertTp: DataTypes.STRING,
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
         },
-        {
-            sequelize,
-            modelName: "Upload",
+        updatedAt: {
+            type: DataTypes.DATE,
+            defaultValue: new Date(),
         },
-    );
+    },
+    {
+        sequelize,
+        modelName: "Upload",
+    },
+);
 
-    return Upload;
-};
+module.exports = Upload;
+// };

@@ -1,5 +1,6 @@
-import models from "../database/models";
-const { sequelize } = models;
+import { Model } from "sequelize";
+import { db } from "../database/models";
+const { sequelize } = db;
 
 export class BaseRepository {
     static async create(model: any, options: object) {
