@@ -10,7 +10,7 @@
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint --init",
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "tsc -p ./tsconfig.json",
     "start": "npm run build && node dist/index.js",
     "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "watch": "tsc --watch -p ./tsconfig.json",
