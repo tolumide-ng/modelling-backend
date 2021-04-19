@@ -6,19 +6,19 @@ services:
         networks:
             - webnet
         environment:
+            POSTGRES_USER: ${DB_USERNAME}
             POSTGRES_PASSWORD: ${DB_PASSWORD}
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_DB: ${DB_DATABASE}
         volumes:
             - pgdata:/var/lib/postgresql/data
         ports:
             - "5434:5432"
     web:
-        build: .
+        image: tolumide/model
         depends_on:
             - db
         ports:
-            - "${PORT}:3000"
+            - 4000:3000
         networks:
             - webnet
         environment:
@@ -26,22 +26,12 @@ services:
             PORT: 3000
             DATABASE_URL: ${DATABASE_URL}
             DB_PASSWORD: ${DB_PASSWORD}
-            DB_USER: ${DB_USER}
-            DB_NAME: ${DB_NAME}
-        command: [
-                # "apk",
-                # "add",
-                # "--no-cache",
-                # "bash",
-                # "sh",
-                # "./wait-for-it.sh",
-                # "db:5434",
-                # "-t:0",
-                # "--",
-                "npm",
-                "run",
-                "start",
-            ]
+            DB_USERNAME: ${DB_USERNAME}
+            DB_DATABASE: ${DB_DATABASE}
+            DB_PORT: 5432
+            NODE_ENV: development
+        entrypoint: ["/bin/bash", "./entrypoint.sh"]
+
 networks:
     webnet:
 volumes:

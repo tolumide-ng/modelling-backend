@@ -20,6 +20,7 @@ if (config.use_env_variable) {
         config.password,
         config,
     );
+    db.sequelize = sequelize;
 }
 
 fs.readdirSync(__dirname)

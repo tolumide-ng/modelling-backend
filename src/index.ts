@@ -5,7 +5,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { ResponseGenerator } from "./helpers/responseGenerator";
 import Routes from "./routes/v1";
-import multer from "multer";
 
 dotenv.config();
 

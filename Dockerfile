@@ -1,13 +1,13 @@
 FROM node:14.16.1-alpine3.10
-USER node
-RUN mkdir /home/node/mbackend
-WORKDIR /home/node/mbackend
-COPY --chown=node:node package*.json .sequelizerc tsconfig.json ./
+RUN apk update && apk add bash
+RUN mkdir /home/node/bbackend
+WORKDIR /home/node/bbackend
+COPY . /home/node/bbackend
+# COPY package*.json .sequelizerc tsconfig.json ./
 RUN npm install
-COPY --chown=node:node src ./src
-# COPY . .
-RUN ls -a
+# COPY src ./src
 RUN npm run build
-ENV NODE_ENV production
+RUN ls -a
+# ENV NODE_ENV production
 EXPOSE 3000
-COPY wait-for-it.sh .
+# COPY wait-for-it.sh .
