@@ -10,11 +10,13 @@
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint --init",
     "dev": "nodemon",
-    "build": "rm -rf ./dist && tsc",
+    "build": "tsc",
     "start": "npm run build && node dist/index.js",
     "set:post-build": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "watch": "tsc --watch -p ./tsconfig.json",
-    "start:dev": "nodemon ./dist"
+    "start:dev": "nodemon ./dist",
+    "gcp-build": "tsc -p .",
+    "deploy": "gcloud app deploy"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
     "multer": "^1.4.2",
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.3",
+    "rimraf": "^3.0.2",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0"
   },

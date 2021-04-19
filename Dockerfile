@@ -1,10 +1,10 @@
 FROM node:14.16.1-alpine3.10
-RUN mkdir /home/node/modelling && chown -R node:node /home/node/modelling
-WORKDIR /home/node/modelling
+USER node
+RUN mkdir /home/node/mbackend
+WORKDIR /home/node/mbackend
 COPY --chown=node:node package*.json .sequelizerc tsconfig.json ./
 RUN npm install
 COPY --chown=node:node src ./src
-USER node
 # COPY . .
 RUN ls -a
 RUN npm run build
