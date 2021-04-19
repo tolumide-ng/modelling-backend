@@ -14,7 +14,7 @@ services:
         ports:
             - "5434:5432"
     web:
-        image: tolumide/model
+        image: tolumide/modelling
         depends_on:
             - db
         ports:
@@ -22,13 +22,15 @@ services:
         networks:
             - webnet
         environment:
-            DB_HOST: db
+            # DB_HOST: db
+            DB_HOST: ${DB_HOST}
             PORT: 3000
             DATABASE_URL: ${DATABASE_URL}
             DB_PASSWORD: ${DB_PASSWORD}
             DB_USERNAME: ${DB_USERNAME}
             DB_DATABASE: ${DB_DATABASE}
-            DB_PORT: 5432
+            # DB_PORT: 5432
+            DB_PORT: ${DB_PORT}
             NODE_ENV: development
         entrypoint: ["/bin/bash", "./entrypoint.sh"]
 

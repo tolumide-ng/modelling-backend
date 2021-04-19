@@ -1,4 +1,4 @@
 #!/bin/bash
-
-sequelize db:migrate:undo:all && sequelize db:migrate
+# sequelize:migrate --env production-ssl-disabled
+npm run set:post-build
 node dist/index.js
