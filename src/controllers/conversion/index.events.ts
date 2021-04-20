@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 export class SSEvents<T> {
     headers = {
-        "Content-Type": "text/event-stream",
+        "Content-Type": "application/json",
         Connection: "keep-alive",
         "Cache-Control": "no-cache",
     };
@@ -19,6 +19,6 @@ export class SSEvents<T> {
     }
 
     send(message: T) {
-        this.res.write(message);
+        this.res.write(JSON.stringify(message));
     }
 }

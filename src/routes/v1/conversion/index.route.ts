@@ -17,4 +17,6 @@ router.patch(
     ConversionController.setConvertTarget,
 );
 
+router.get("/convert/:id", ConversionController)
+
 export default router;
