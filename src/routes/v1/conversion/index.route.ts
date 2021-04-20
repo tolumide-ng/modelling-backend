@@ -11,6 +11,10 @@ router.post(
     ConversionController.uploadFile,
 );
 
-router.get("convert/:target/:id", ConversionMiddleware.chooseTarget);
+router.patch(
+    "/convert/:target/:id",
+    ConversionMiddleware.chooseTarget(),
+    ConversionController.setConvertTarget,
+);
 
 export default router;

@@ -1,9 +1,8 @@
 import { RequestHandler } from "express";
 import { BaseRepository } from "../../../baseRepository";
 import { ResponseGenerator } from "../../../helpers/responseGenerator";
-import { targetTypeDef } from "./index";
 
-const Upload = require("../../database/models/upload");
+const Upload = require("../../../database/models/upload");
 
 export const validTargets = ["STEP", "STL", "IGES"];
 
@@ -43,21 +42,23 @@ export const isIdPresent: RequestHandler = (req, res, next) => {
             "Please provide a valid file id",
         );
     }
-};
-
-export const isIdValid: RequestHandler = async (req, res, next) => {
-    const response = await BaseRepository.findOneByField(Upload, {
-        fileId: req.params.id,
-    });
-
-    if (!response) {
-        return ResponseGenerator.sendError(res, 404, "Resource not found");
-    }
 
     next();
 };
 
-export const isValidTarget: RequestHandler = async (req, res, next) => {
+export const isIdValid: RequestHandler = async (req, res, next) => {
+    try {
+        await BaseRepository.findOneByField(Upload, {
+            fileId: req.params.id,
+        });
+
+        next();
+    } catch (error) {
+        return ResponseGenerator.sendError(res, 404, "Resource not found");
+    }
+};
+
+export const isValidTarget: RequestHandler = (req, res, next) => {
     if (!validTargets.includes(req.params.target)) {
         return ResponseGenerator.sendError(res, 415, "Unsupported Media Type");
     }

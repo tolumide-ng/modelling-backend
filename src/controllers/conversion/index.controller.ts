@@ -23,7 +23,7 @@ export class ConversionController extends ResponseGenerator {
                 fileName: originalname,
             });
 
-            const { id: fileId, fileName } = await response.get({
+            const { fileId, fileName } = await response.get({
                 plain: true,
             });
 
@@ -38,13 +38,15 @@ export class ConversionController extends ResponseGenerator {
     }
 
     static async setConvertTarget(req: Request, res: Response) {
-        const { id: fileId, target } = req.params;
+        const { id, target } = req.params;
 
         await BaseRepository.findAndUpdate(
             Upload,
             { converTo: target },
-            { fileId },
+            { fileId: id },
         );
+
+        return ResponseGenerator.sendSuccess(res, 200, { message: "Success" });
     }
 
     static async streamConversion(req: Request, res: Response) {

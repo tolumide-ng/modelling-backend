@@ -17,7 +17,7 @@ module.exports = {
             fileName: {
                 type: Sequelize.STRING,
             },
-            convertTp: {
+            convertTo: {
                 type: Sequelize.STRING,
             },
             createdAt: {
