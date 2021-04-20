@@ -44,11 +44,11 @@ export class ConversionController extends ResponseGenerator {
 
         const { id: fileId, target } = req.params;
 
-        // await BaseRepository.findAndUpdate(
-        //     Upload,
-        //     { converTo: target },
-        //     { fileId },
-        // );
+        await BaseRepository.findAndUpdate(
+            Upload,
+            { converTo: target },
+            { fileId },
+        );
 
         let percentageConverted = 0;
 

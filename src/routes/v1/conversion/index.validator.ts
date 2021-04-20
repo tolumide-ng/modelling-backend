@@ -35,7 +35,7 @@ export const validateReceivedFile: RequestHandler = (req, res, next) => {
     next();
 };
 
-export const containsId: RequestHandler = (req, res, next) => {
+export const isIdPresent: RequestHandler = (req, res, next) => {
     if (!req.params.id) {
         return ResponseGenerator.sendError(
             res,
@@ -45,14 +45,16 @@ export const containsId: RequestHandler = (req, res, next) => {
     }
 };
 
-export const isValidId: RequestHandler = async (req, res, next) => {
+export const isIdValid: RequestHandler = async (req, res, next) => {
     const response = await BaseRepository.findOneByField(Upload, {
         fileId: req.params.id,
     });
 
-    console.log("THE RESPONSE", response);
+    if (!response) {
+        return ResponseGenerator.sendError(res, 404, "Resource not found");
+    }
 
-    return ResponseGenerator.sendSuccess(res, 200, response);
+    next();
 };
 
 export const isValidTarget: RequestHandler = async (req, res, next) => {
