@@ -48,9 +48,13 @@ export const isIdPresent: RequestHandler = (req, res, next) => {
 
 export const isIdValid: RequestHandler = async (req, res, next) => {
     try {
-        await BaseRepository.findOneByField(Upload, {
+        const response = await BaseRepository.findOneByField(Upload, {
             fileId: req.params.id,
         });
+
+        if (response === null) {
+            return ResponseGenerator.sendError(res, 404, "Resource not found");
+        }
 
         next();
     } catch (error) {

@@ -26,8 +26,4 @@ export class ConversionMiddleware {
             isValidTarget,
         );
     }
-
-    static streamConversion() {
-        return ResponseGenerator.composeHanlders(isIdPresent, isIdValid);
-    }
 }

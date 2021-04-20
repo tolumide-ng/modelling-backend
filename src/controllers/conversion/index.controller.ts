@@ -40,17 +40,34 @@ export class ConversionController extends ResponseGenerator {
     static async setConvertTarget(req: Request, res: Response) {
         const { id, target } = req.params;
 
-        await BaseRepository.findAndUpdate(
+        const response = await BaseRepository.findAndUpdate(
             Upload,
-            { converTo: target },
+            { target },
             { fileId: id },
         );
 
-        return ResponseGenerator.sendSuccess(res, 200, { message: "Success" });
+        const {
+            fileName,
+            target: targetFormat,
+            fileId,
+        } = response[0].dataValues;
+
+        const targetName = fileName.split(".");
+        targetName[targetName.length - 1] = targetFormat.toLowerCase();
+        const theTargetName = targetName.join(".");
+
+        return ResponseGenerator.sendSuccess(res, 200, {
+            targetName: theTargetName,
+            fileId,
+        });
     }
 
     static async streamConversion(req: Request, res: Response) {
         const sse = new SSEvents(req, res);
+
+        req.on("close", () => {
+            sse.close();
+        });
 
         let percentageConverted = 0;
 
@@ -68,14 +85,10 @@ export class ConversionController extends ResponseGenerator {
                 emitConversionState,
                 ConversionController.CALL_INTERVAL,
             );
-        }, this.CALL_INTERVAL);
+        }, ConversionController.CALL_INTERVAL);
     }
 
     static async downloadFile(req: Request, res: Response) {
-        // const response = await BaseRepository.findOneByField(Upload, {
-        //     fileId: req.params.id,
-        // });
-
         const response = { fileName: "", convertTo: "" };
 
         const theFile = `${response.fileName}.${response.convertTo}`;

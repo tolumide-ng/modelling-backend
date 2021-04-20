@@ -17,6 +17,6 @@ router.patch(
     ConversionController.setConvertTarget,
 );
 
-router.get("/convert/:id", ConversionController)
+router.get("/stream/:id", ConversionController.streamConversion);
 
 export default router;

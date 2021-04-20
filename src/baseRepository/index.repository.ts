@@ -15,6 +15,7 @@ export class BaseRepository {
         return model.update(fields, {
             where: options,
             returning: true,
+            plain: true,
         });
     }
 }
