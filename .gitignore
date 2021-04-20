@@ -3,3 +3,6 @@ dist/
 package-lock.json
 .env
 .nyc_output/
+key.json
+app.standard.yaml
+app.flexible.yaml

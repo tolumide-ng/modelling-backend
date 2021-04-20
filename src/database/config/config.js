@@ -4,7 +4,12 @@ dotenv.config();
 
 module.exports = {
     development: {
-        use_env_variable: "DATABASE_DEV_URL",
+        // use_env_variable: "DATABASE_DEV_URL",
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD || "",
+        database: process.env.DB_DATABASE,
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
         dialect: "postgres",
         ssl: true,
         logging: true,
@@ -17,7 +22,12 @@ module.exports = {
         },
     },
     test: {
-        use_env_variable: "DATABASE_TEST_URL",
+        // use_env_variable: "DATABASE_TEST_URL",
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD || "",
+        database: process.env.DB_DATABASE,
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
         dialect: "postgres",
         logging: false,
         ssl: true,
@@ -30,10 +40,15 @@ module.exports = {
         },
     },
     production: {
-        use_env_variable: "DATABASE_URL",
+        // use_env_variable: "DATABASE_URL",
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD || "",
+        database: process.env.DB_DATABASE,
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
         dialect: "postgres",
         logging: false,
-        port: 5432,
+        // port: 5432,
         ssl: true,
         operatorsAliases: false,
         dialectOption: {
