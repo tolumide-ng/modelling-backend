@@ -4,3 +4,5 @@ declare namespace Express {
         fileName: string;
     }
 }
+
+export type targetTypeDef = "STEP" | "STL" | "IGES";

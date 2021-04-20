@@ -11,4 +11,6 @@ router.post(
     ConversionController.uploadFile,
 );
 
+router.get("/:target/:id");
+
 export default router;

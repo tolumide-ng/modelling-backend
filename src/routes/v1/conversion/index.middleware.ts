@@ -1,6 +1,7 @@
 import { ResponseGenerator } from "../../../helpers/responseGenerator";
 import multer from "multer";
 import { validateReceivedFile } from "./index.validator";
+import { isValidId, isValidTarget } from ".";
 
 export class ConversionMiddleware {
     static MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -16,5 +17,9 @@ export class ConversionMiddleware {
             multerUpload,
             validateReceivedFile,
         );
+    }
+
+    static chooseTarget() {
+        return ResponseGenerator.composeHanlders(isValidId, isValidTarget);
     }
 }

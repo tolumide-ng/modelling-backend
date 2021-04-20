@@ -30,6 +30,7 @@ export class ResponseGenerator extends Utils {
     }
 
     static composeHanlders(...middleware: RequestHandler[]): RequestHandler {
+        console.log("all of the middleware>>>>>>>>>>>>>>>>>.", middleware);
         return middleware.reduce(
             (currentMiddleware, nextMiddleware) => (req, res, next) =>
                 currentMiddleware(req, res, (err: any) => {
