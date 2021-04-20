@@ -3,6 +3,8 @@ import path from "path";
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
+import { SSEvents } from ".";
+
 const Upload = require("../../database/models/upload");
 
 export class ConversionController extends ResponseGenerator {
@@ -35,13 +37,7 @@ export class ConversionController extends ResponseGenerator {
         }
     }
 
-    static async convertFile(req: Request, res: Response) {
-        const headers = {
-            "Content-Type": "text/event-stream",
-            Connection: "keep-alive",
-            "Cache-Control": "no-cache",
-        };
-
+    static async setConvertTarget(req: Request, res: Response) {
         const { id: fileId, target } = req.params;
 
         await BaseRepository.findAndUpdate(
@@ -49,16 +45,17 @@ export class ConversionController extends ResponseGenerator {
             { converTo: target },
             { fileId },
         );
+    }
+
+    static async streamConversion(req: Request, res: Response) {
+        const sse = new SSEvents(req, res);
 
         let percentageConverted = 0;
 
-        res.writeHead(200, headers);
-
         let timerId = setTimeout(function emitConversionState() {
             percentageConverted += 10;
-            ResponseGenerator.sendSuccess(res, 200, {
-                percentage: percentageConverted,
-            });
+
+            sse.send({ status: percentageConverted });
 
             if (percentageConverted === 100) {
                 clearTimeout(timerId);
