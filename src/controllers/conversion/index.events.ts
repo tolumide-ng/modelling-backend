@@ -21,4 +21,8 @@ export class SSEvents<T> {
     send(message: T) {
         this.res.write(JSON.stringify(message));
     }
+
+    close() {
+        this.res.end();
+    }
 }

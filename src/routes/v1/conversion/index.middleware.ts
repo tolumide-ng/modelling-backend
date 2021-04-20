@@ -28,6 +28,6 @@ export class ConversionMiddleware {
     }
 
     static streamConversion() {
-        return ResponseGenerator.composeHanlders(isIdPresent, isIdValid, );
+        return ResponseGenerator.composeHanlders(isIdPresent, isIdValid);
     }
 }

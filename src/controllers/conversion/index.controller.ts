@@ -60,6 +60,7 @@ export class ConversionController extends ResponseGenerator {
             sse.send({ status: percentageConverted });
 
             if (percentageConverted === 100) {
+                sse.close();
                 clearTimeout(timerId);
             }
 
