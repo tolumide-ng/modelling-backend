@@ -1,5 +1,10 @@
 import { RequestHandler } from "express";
+import { BaseRepository } from "../../../baseRepository";
 import { ResponseGenerator } from "../../../helpers/responseGenerator";
+
+const Upload = require("../../../database/models/upload");
+
+export const validTargets = ["STEP", "STL", "IGES"];
 
 export const validateReceivedFile: RequestHandler = (req, res, next) => {
     if (!req.file) {
@@ -24,6 +29,38 @@ export const validateReceivedFile: RequestHandler = (req, res, next) => {
             415,
             "Unsupported Media Type: Only .shapr files are supported",
         );
+    }
+
+    next();
+};
+
+export const isIdPresent: RequestHandler = (req, res, next) => {
+    if (!req.params.id) {
+        return ResponseGenerator.sendError(
+            res,
+            400,
+            "Please provide a valid file id",
+        );
+    }
+
+    next();
+};
+
+export const isIdValid: RequestHandler = async (req, res, next) => {
+    try {
+        await BaseRepository.findOneByField(Upload, {
+            fileId: req.params.id,
+        });
+
+        next();
+    } catch (error) {
+        return ResponseGenerator.sendError(res, 404, "Resource not found");
+    }
+};
+
+export const isValidTarget: RequestHandler = (req, res, next) => {
+    if (!validTargets.includes(req.params.target)) {
+        return ResponseGenerator.sendError(res, 415, "Unsupported Media Type");
     }
 
     next();

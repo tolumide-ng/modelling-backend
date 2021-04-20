@@ -1,0 +1,66 @@
+name: modelling
+on:
+  push:
+    branches: [ develop ]
+#  pull_request:
+#    branches: [ develop ]
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+
+    steps:
+      - name: Checking out of repo.
+        uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          check-latest: true
+
+      - name: Get npm cache directory
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
+      - name: Install all node modules
+        run: npm install
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+      - name: Build Docker image
+        run: npm run docker-build
+      - name: Publish Docker image
+        run: docker push ${{ secrets.DOCKER_REPO }}
+
+      - name: deploy command
+        uses: appleboy/ssh-action@master
+        with:
+          host: 159.89.3.185
+          username: ${{ secrets.CI_USER }}
+          passphrase: ${{secrets.CI_KEY_PASSPHRASE}}
+          key: ${{ secrets.CI_KEY }}
+          script: |
+            cd /opt/webserver/tolumide/
+            docker pull tolumide/modelling
+            docker-compose down
+            docker system prune -f
+            docker-compose up -d
+
+#        /opt/webserver/asobooks-test/scripts
+
+
+
+
+#      - name: Run Test
+#        run: npm run test:cov
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v1
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
+#          directory: ./coverage

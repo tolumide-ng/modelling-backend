@@ -3,6 +3,8 @@ import path from "path";
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
+import { SSEvents } from ".";
+
 const Upload = require("../../database/models/upload");
 
 export class ConversionController extends ResponseGenerator {
@@ -21,7 +23,7 @@ export class ConversionController extends ResponseGenerator {
                 fileName: originalname,
             });
 
-            const { id: fileId, fileName } = await response.get({
+            const { fileId, fileName } = await response.get({
                 plain: true,
             });
 
@@ -35,30 +37,27 @@ export class ConversionController extends ResponseGenerator {
         }
     }
 
-    static async convertFile(req: Request, res: Response) {
-        const headers = {
-            "Content-Type": "text/event-stream",
-            Connection: "keep-alive",
-            "Cache-Control": "no-cache",
-        };
+    static async setConvertTarget(req: Request, res: Response) {
+        const { id, target } = req.params;
 
-        const { id: fileId, target } = req.params;
+        await BaseRepository.findAndUpdate(
+            Upload,
+            { converTo: target },
+            { fileId: id },
+        );
 
-        // await BaseRepository.findAndUpdate(
-        //     Upload,
-        //     { converTo: target },
-        //     { fileId },
-        // );
+        return ResponseGenerator.sendSuccess(res, 200, { message: "Success" });
+    }
+
+    static async streamConversion(req: Request, res: Response) {
+        const sse = new SSEvents(req, res);
 
         let percentageConverted = 0;
 
-        res.writeHead(200, headers);
-
         let timerId = setTimeout(function emitConversionState() {
             percentageConverted += 10;
-            ResponseGenerator.sendSuccess(res, 200, {
-                percentage: percentageConverted,
-            });
+
+            sse.send({ status: percentageConverted });
 
             if (percentageConverted === 100) {
                 clearTimeout(timerId);
