@@ -31,7 +31,7 @@ export class AmazonS3 implements AmazonS3Def {
             Body: fs.createReadStream(req.file.path),
             Bucket: String(this.config.bucketUrl),
             ContentType: "application/octet-stream",
-            Key: `${req.file.originalname}-${uuidv4()}`,,
+            Key: `${req.file.originalname}-${uuidv4()}`,
         };
 
         Aws.config.update({
@@ -42,12 +42,10 @@ export class AmazonS3 implements AmazonS3Def {
         const s3 = new Aws.S3();
 
         try {
-            const data = await s3.upload(params);
-            req.bucketUrl = data;
+            const data = s3.upload(params).promise();
+            // req.bucketUrl = data;
+            console.log("OBTAINED DATA FROM S3", data);
             next();
-        } catch (error) {
-            
-        }
-
+        } catch (error) {}
     }
 }

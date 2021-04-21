@@ -1,8 +1,6 @@
-declare namespace Express {
+declare module Express {
     export interface Request {
         bucketUrl: string;
         fileName: string;
     }
 }
-
-export type targetTypeDef = "STEP" | "STL" | "IGES";
