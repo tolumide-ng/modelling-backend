@@ -16,7 +16,8 @@
     "watch": "tsc --watch -p ./tsconfig.json",
     "start:dev": "nodemon ./dist",
     "gcp-build": "tsc -p .",
-    "deploy": "gcloud app deploy"
+    "deploy": "gcloud app deploy",
+    "docker-build": "docker build . -t tolumide/modelling"
   },
   "keywords": [],
   "author": "",
