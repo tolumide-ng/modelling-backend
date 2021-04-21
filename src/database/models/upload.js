@@ -19,7 +19,7 @@ Upload.init(
         fileUrl: DataTypes.STRING,
         fileId: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
         fileName: DataTypes.STRING,
-        convertTo: DataTypes.STRING,
+        target: DataTypes.STRING,
         createdAt: {
             type: DataTypes.DATE,
             defaultValue: new Date(),
