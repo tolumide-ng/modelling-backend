@@ -50,7 +50,7 @@ export class ConversionController extends ResponseGenerator {
             fileName,
             target: targetFormat,
             fileId,
-        } = response[0].dataValues;
+        } = response[1].dataValues;
 
         const targetName = fileName.split(".");
         targetName[targetName.length - 1] = targetFormat.toLowerCase();
