@@ -42,7 +42,8 @@ export class AmazonS3 implements AmazonS3Def {
         const s3 = new Aws.S3();
 
         try {
-            await s3.upload(params);
+            const data = await s3.upload(params);
+            req.bucketUrl = data;
             next();
         } catch (error) {
             
