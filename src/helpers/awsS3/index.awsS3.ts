@@ -6,22 +6,9 @@ import { AmazonS3Def, ConfigDef } from "./index.model";
 import Aws from "aws-sdk";
 
 export class AmazonS3 implements AmazonS3Def {
-    req: Request;
-    res: Response;
-    next: NextFunction;
-    config: ConfigDef;
+    private bucketUrl = `${process.env.AWS_BUCKET_URL}` || "";
 
-    constructor(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-        config: ConfigDef,
-    ) {
-        this.req = req;
-        this.res = res;
-        this.next = next;
-        this.config = config;
-    }
+    constructor() {}
 
     async upload(req: Request, res: Response, next: NextFunction) {
         const region = process.env.AWS_REGION;
@@ -29,7 +16,7 @@ export class AmazonS3 implements AmazonS3Def {
         const params = {
             ACL: "public-read",
             Body: fs.createReadStream(req.file.path),
-            Bucket: String(this.config.bucketUrl),
+            Bucket: String(this.bucketUrl),
             ContentType: "application/octet-stream",
             Key: `${req.file.originalname}-${uuidv4()}`,
         };
@@ -41,11 +28,10 @@ export class AmazonS3 implements AmazonS3Def {
 
         const s3 = new Aws.S3();
 
-        try {
-            const data = s3.upload(params).promise();
-            // req.bucketUrl = data;
-            console.log("OBTAINED DATA FROM S3", data);
-            next();
-        } catch (error) {}
+        console.log("_____________BEFORE THE REQUEST___________");
+        const data = s3.upload(params).promise();
+        // req.bucketUrl = data;
+        console.log("*************OBTAINED DATA FROM S3***********", data);
+        next();
     }
 }

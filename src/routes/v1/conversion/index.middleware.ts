@@ -2,6 +2,7 @@ import { ResponseGenerator } from "../../../helpers/responseGenerator";
 import multer from "multer";
 import { validateReceivedFile } from "./index.validator";
 import { isIdPresent, isIdValid, isValidTarget } from ".";
+import { AmazonS3 } from "../../../helpers/awsS3/index.awsS3";
 
 export class ConversionMiddleware {
     static MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -13,9 +14,12 @@ export class ConversionMiddleware {
             limits: { fileSize: this.MAX_FILE_SIZE, files: 1 },
         }).single(file);
 
+        const awsS3 = new AmazonS3();
+
         return ResponseGenerator.composeHanlders(
             multerUpload,
             validateReceivedFile,
+            awsS3.upload,
         );
     }
 
