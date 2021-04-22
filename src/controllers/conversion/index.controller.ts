@@ -1,9 +1,8 @@
-import fs from "fs";
-import path from "path";
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
 import { SSEvents } from ".";
+import { AmazonS3 } from "../../helpers/awsS3/index.awsS3";
 
 const Upload = require("../../database/models/upload");
 
@@ -17,10 +16,14 @@ export class ConversionController extends ResponseGenerator {
     static async uploadFile(req: Request, res: Response) {
         const { originalname } = req.file;
 
+        const name = originalname.split(".");
+        name.pop();
+        const thename = name.join(".");
+
         try {
             const response = await BaseRepository.create(Upload, {
-                fileUrl: "locationOfWhereFileIsStoredOnGCBucket",
-                fileName: originalname,
+                fileUrl: req.bucketUrl,
+                fileName: thename,
             });
 
             const { fileId, fileName } = await response.get({
@@ -33,88 +36,123 @@ export class ConversionController extends ResponseGenerator {
                 fileName,
             });
         } catch (error) {
-            return ResponseGenerator.sendError(res, 400, error);
+            return ResponseGenerator.sendError(
+                res,
+                400,
+                "Internal Server Error",
+            );
         }
     }
 
     static async setConvertTarget(req: Request, res: Response) {
-        const { id, target } = req.params;
+        try {
+            const { id, target } = req.params;
 
-        const response = await BaseRepository.findAndUpdate(
-            Upload,
-            { target },
-            { fileId: id },
-        );
+            const response = await BaseRepository.findAndUpdate(
+                Upload,
+                { target },
+                { fileId: id },
+            );
 
-        const {
-            fileName,
-            target: targetFormat,
-            fileId,
-        } = response[1].dataValues;
+            const {
+                fileName,
+                target: targetFormat,
+                fileId,
+            } = response[1].dataValues;
 
-        const targetName = fileName.split(".");
-        targetName[targetName.length - 1] = targetFormat.toLowerCase();
-        const theTargetName = targetName.join(".");
-
-        return ResponseGenerator.sendSuccess(res, 200, {
-            targetName: theTargetName,
-            fileId,
-        });
+            return ResponseGenerator.sendSuccess(res, 200, {
+                targetName: `${fileName}.${targetFormat.toLowerCase()}`,
+                fileId,
+            });
+        } catch (error) {
+            return ResponseGenerator.sendError(
+                res,
+                500,
+                "Internal Server Error",
+            );
+        }
     }
 
     static async streamConversion(req: Request, res: Response) {
-        const sse = new SSEvents(req, res);
+        const { id: fileId } = req.params;
 
-        req.on("close", () => {
-            sse.close();
-        });
+        try {
+            const getInfo = await BaseRepository.findOneByField(Upload, {
+                fileId,
+            });
 
-        let percentageConverted = 0;
+            const { fileName, target, id } = getInfo;
 
-        let timerId = setTimeout(function emitConversionState() {
-            percentageConverted += 10;
+            const bucketService = new AmazonS3();
 
-            sse.send({ status: percentageConverted });
+            const targetName = `${fileName}-${id}.${target}`;
 
-            if (percentageConverted === 100) {
-                sse.close();
-                clearTimeout(timerId);
+            const fileContent = "If you ever need a reason to smile...";
+
+            const bucketUrl = await bucketService.uploadConverted(
+                fileContent,
+                targetName,
+            );
+
+            if (!bucketUrl) {
+                throw "";
             }
 
-            timerId = setTimeout(
-                emitConversionState,
-                ConversionController.CALL_INTERVAL,
+            await BaseRepository.findAndUpdate(
+                Upload,
+                { targetUrl: bucketUrl },
+                { fileId },
             );
-        }, ConversionController.CALL_INTERVAL);
+
+            const sse = new SSEvents(req, res);
+
+            req.on("close", () => {
+                sse.close();
+            });
+
+            let percentageConverted = 0;
+
+            let timerId = setTimeout(function emitConversionState() {
+                percentageConverted += 10;
+
+                sse.send({ status: percentageConverted });
+
+                if (percentageConverted === 100) {
+                    sse.close();
+                    clearTimeout(timerId);
+                }
+
+                timerId = setTimeout(
+                    emitConversionState,
+                    ConversionController.CALL_INTERVAL,
+                );
+            }, ConversionController.CALL_INTERVAL);
+        } catch (error) {
+            return ResponseGenerator.sendError(
+                res,
+                500,
+                "Internal Server Error",
+            );
+        }
     }
 
     static async downloadFile(req: Request, res: Response) {
-        const response = { fileName: "", convertTo: "" };
-
-        const theFile = `${response.fileName}.${response.convertTo}`;
-        const absPath = path.join(__dirname, "/targets_files/", theFile);
-        const relPath = path.join(__dirname, "./targets_files", theFile);
-
-        const dataText = new Uint8Array(
-            Buffer.from("Thank you for using modelling to convert your files"),
-        );
-
         try {
-            fs.writeFile(relPath, dataText, (err) => {
-                if (err) throw err;
+            const response = await BaseRepository.findOneByField(Upload, {
+                fileId: req.params.id,
+            });
 
-                res.download(absPath, (err) => {
-                    if (err) {
-                        throw err;
-                    }
-                });
+            const { targetUrl } = response.dataValues;
 
-                fs.unlink(relPath, (err) => {
-                    if (err) throw err;
-                });
+            return ResponseGenerator.sendSuccess(res, 200, {
+                convertedFile: targetUrl,
             });
         } catch (error) {
-            this.sendError(res, 400, error);
+            return ResponseGenerator.sendError(
+                res,
+                500,
+                "Internal Server Error",
+            );
         }
     }
 }

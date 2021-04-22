@@ -44,7 +44,7 @@ app.use("*", (req, res) => {
     ResponseGenerator.sendError(res, 404, "Page Not Found");
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 4000;
 
 const server = app.listen(PORT, () => {
     process.stdout.write(`Listening on port ${PORT}`);

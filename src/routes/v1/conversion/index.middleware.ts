@@ -19,7 +19,9 @@ export class ConversionMiddleware {
         return ResponseGenerator.composeHanlders(
             multerUpload,
             validateReceivedFile,
-            awsS3.upload,
+            (req, res, next) => {
+                awsS3.uploadOriginal(req, res, next);
+            },
         );
     }
 
