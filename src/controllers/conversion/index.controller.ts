@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
 import { SSEvents } from ".";
-import { AmazonS3 } from "../../helpers/awsS3/index.awsS3";
+import { AmazonS3 } from "../../helpers/awsS3";
 
 const Upload = require("../../database/models/upload");
 
@@ -11,7 +11,7 @@ export class ConversionController extends ResponseGenerator {
         super();
     }
 
-    static CALL_INTERVAL = 5000;
+    static CALL_INTERVAL = 3000;
 
     static async uploadFile(req: Request, res: Response) {
         const { originalname } = req.file;
@@ -114,7 +114,7 @@ export class ConversionController extends ResponseGenerator {
             let percentageConverted = 0;
 
             let timerId = setTimeout(function emitConversionState() {
-                percentageConverted += 10;
+                percentageConverted += 20;
 
                 sse.send({ status: percentageConverted });
 
@@ -127,7 +127,7 @@ export class ConversionController extends ResponseGenerator {
                     emitConversionState,
                     ConversionController.CALL_INTERVAL,
                 );
-            }, ConversionController.CALL_INTERVAL);
+            }, 0);
         } catch (error) {
             return ResponseGenerator.sendError(
                 res,

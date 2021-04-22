@@ -5,7 +5,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import Pool from "pg-pool";
 import { ResponseGenerator } from "./helpers/responseGenerator";
-import Config from "./database/config/config";
 import Routes from "./routes/v1";
 
 dotenv.config();

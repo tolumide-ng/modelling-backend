@@ -3,7 +3,6 @@ import { ResponseGenerator } from ".";
 import { Utils } from "../utils";
 import sinon from "sinon";
 import { Response } from "express";
-import faker from "faker/locale/en_US";
 import { expect } from "chai";
 
 describe("Response Generator Helper Class", () => {
