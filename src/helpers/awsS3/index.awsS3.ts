@@ -10,8 +10,6 @@ export class AmazonS3 implements FileUploadDef {
     static ACL = "public-read";
     static mimeType = "application/octet-stream";
 
-    // params: FileParamsDef;
-
     bucketService: Aws.S3;
 
     constructor() {

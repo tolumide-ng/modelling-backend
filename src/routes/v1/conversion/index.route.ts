@@ -16,7 +16,7 @@ router.patch(
     ConversionController.setConvertTarget,
 );
 
-router.get("/stream/:id", ConversionController.streamConversion);
+router.get("/stream/:id", isIdValid, ConversionController.streamConversion);
 
 router.get("/download/:id", isIdValid, ConversionController.downloadFile);
 

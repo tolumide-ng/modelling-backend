@@ -58,10 +58,11 @@ export class ConversionController extends ResponseGenerator {
                 fileName,
                 target: targetFormat,
                 fileId,
+                id: rowId,
             } = response[1].dataValues;
 
             return ResponseGenerator.sendSuccess(res, 200, {
-                targetName: `${fileName}.${targetFormat.toLowerCase()}`,
+                targetName: `${fileName}-${rowId}.${targetFormat.toLowerCase()}`,
                 fileId,
             });
         } catch (error) {
