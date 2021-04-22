@@ -5,7 +5,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import Pool from "pg-pool";
 import { ResponseGenerator } from "./helpers/responseGenerator";
-import Config from "./database/config/config";
 import Routes from "./routes/v1";
 
 dotenv.config();
@@ -44,7 +43,7 @@ app.use("*", (req, res) => {
     ResponseGenerator.sendError(res, 404, "Page Not Found");
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 4000;
 
 const server = app.listen(PORT, () => {
     process.stdout.write(`Listening on port ${PORT}`);

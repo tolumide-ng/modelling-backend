@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { ConversionMiddleware } from "./index.middleware";
+import { ConversionMiddleware, isIdValid } from ".";
 import { ConversionController } from "../../../controllers/conversion";
-import multer from "multer";
 
 const router = Router();
 
@@ -17,6 +16,8 @@ router.patch(
     ConversionController.setConvertTarget,
 );
 
-router.get("/stream/:id", ConversionController.streamConversion);
+router.get("/stream/:id", isIdValid, ConversionController.streamConversion);
+
+router.get("/download/:id", isIdValid, ConversionController.downloadFile);
 
 export default router;

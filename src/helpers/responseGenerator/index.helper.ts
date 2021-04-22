@@ -2,7 +2,7 @@ import { Utils } from "../utils";
 import { Response, RequestHandler } from "express";
 
 export class ResponseGenerator extends Utils {
-    static async sendError(res: Response, statusCode: number, message: string) {
+    static sendError(res: Response, statusCode: number, message: string) {
         return res.status(statusCode).send({ message });
     }
 
