@@ -29,5 +29,6 @@ At application currently stores the uploaded file on an `s3 bucket` and streams 
 
 -   Clone the repo
 -   `cd` into the application
+-   Create `.env` file and provide the data as indicated on the `.env.sample` file
 -   Build the docker image `docker build . -t <tolumide/modelling>`
 -   Run the application with `docker compose up`
