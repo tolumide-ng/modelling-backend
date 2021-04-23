@@ -4,7 +4,7 @@ import { db } from "./index";
 const { sequelize } = db;
 
 // module.exports = (sequelize, DataTypes) => {
-class Upload extends Model {
+export default class Upload extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -37,4 +37,3 @@ Upload.init(
 );
 
 module.exports = Upload;
-// };

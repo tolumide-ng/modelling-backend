@@ -15,6 +15,7 @@ services:
             - "5434:5432"
     web:
         image: tolumide/modelling
+        container_name: "backend"
         depends_on:
             - db
         ports:
@@ -22,18 +23,16 @@ services:
         networks:
             - webnet
         environment:
-            # DB_HOST: db
-            DB_HOST: ${DB_HOST}
             PORT: 3000
             DATABASE_URL: ${DATABASE_URL}
+            DB_HOST: ${DB_HOST}
             DB_PASSWORD: ${DB_PASSWORD}
             DB_USERNAME: ${DB_USERNAME}
+            DB_PORT: ${DB_PORT}
             DB_DATABASE: ${DB_DATABASE}
             AMAZON_S3_BUCKET: ${AMAZON_S3_BUCKET}
             AMAZON_S3_SECRET_KEY: ${AMAZON_S3_SECRET_KEY}
             AMAZON_S3_ACCESS_KEY: ${AMAZON_S3_ACCESS_KEY}
-            # DB_PORT: 5432
-            DB_PORT: ${DB_PORT}
             NODE_ENV: development
         entrypoint: ["/bin/bash", "./entrypoint.sh"]
 

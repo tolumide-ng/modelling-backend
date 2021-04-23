@@ -3,7 +3,9 @@ RUN apk update && apk add bash
 RUN mkdir /home/node/bbackend
 WORKDIR /home/node/bbackend
 COPY . /home/node/bbackend
+ARG BASE_URL
 RUN npm install
 RUN npm run build
 RUN ls -a
 EXPOSE 3000
+CMD ["npm", "start"]

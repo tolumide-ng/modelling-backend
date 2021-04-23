@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { BaseRepository } from "../../../baseRepository";
 import { ResponseGenerator } from "../../../helpers/responseGenerator";
 
-const Upload = require("../../../database/models/upload");
+import Upload from "../../../database/models/upload";
 
 export const validTargets = ["STEP", "STL", "IGES"];
 
