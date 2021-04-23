@@ -3,8 +3,7 @@ import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
 import { SSEvents } from ".";
 import { AmazonS3 } from "../../helpers/awsS3";
-
-const Upload = require("../../database/models/upload");
+import Upload from "../../database/models/upload";
 
 export class ConversionController extends ResponseGenerator {
     constructor() {
@@ -36,11 +35,7 @@ export class ConversionController extends ResponseGenerator {
                 fileName,
             });
         } catch (error) {
-            return ResponseGenerator.sendError(
-                res,
-                400,
-                "Internal Server Error",
-            );
+            return ResponseGenerator.sendError(res, 400, error.message);
         }
     }
 
