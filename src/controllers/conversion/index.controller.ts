@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
-import { SSEvents } from ".";
+import { ConversionMiddleware } from ".";
 import { AmazonS3 } from "../../helpers/awsS3";
 import Upload from "../../database/models/upload";
 
@@ -94,29 +94,7 @@ export class ConversionController extends ResponseGenerator {
                 throw "";
             }
 
-            const sse = new SSEvents(req, res);
-
-            req.on("close", () => {
-                sse.close();
-            });
-
-            let percentageConverted = 0;
-
-            let timerId = setTimeout(function emitConversionState() {
-                percentageConverted += 20;
-
-                sse.send({ status: percentageConverted });
-
-                if (percentageConverted === 100) {
-                    sse.close();
-                    clearTimeout(timerId);
-                }
-
-                timerId = setTimeout(
-                    emitConversionState,
-                    ConversionController.CALL_INTERVAL,
-                );
-            }, 0);
+            ConversionMiddleware.convertFile(req, res);
 
             await BaseRepository.findAndUpdate(
                 Upload,
