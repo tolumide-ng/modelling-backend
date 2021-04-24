@@ -63,7 +63,7 @@ export const isIdValid: RequestHandler = async (req, res, next) => {
 };
 
 export const isValidTarget: RequestHandler = (req, res, next) => {
-    if (!validTargets.includes(req.params.target)) {
+    if (!validTargets.includes(req.params.target.toUpperCase())) {
         return ResponseGenerator.sendError(res, 415, "Unsupported Media Type");
     }
 

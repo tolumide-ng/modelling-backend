@@ -94,12 +94,6 @@ export class ConversionController extends ResponseGenerator {
                 throw "";
             }
 
-            await BaseRepository.findAndUpdate(
-                Upload,
-                { targetUrl: bucketUrl },
-                { fileId },
-            );
-
             const sse = new SSEvents(req, res);
 
             req.on("close", () => {
@@ -123,6 +117,12 @@ export class ConversionController extends ResponseGenerator {
                     ConversionController.CALL_INTERVAL,
                 );
             }, 0);
+
+            await BaseRepository.findAndUpdate(
+                Upload,
+                { targetUrl: bucketUrl },
+                { fileId },
+            );
         } catch (error) {
             return ResponseGenerator.sendError(
                 res,
