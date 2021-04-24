@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
-import { ConversionMiddleware } from ".";
+import { ConversionMiddleware } from "../../middlewares/conversion";
 import { AmazonS3 } from "../../helpers/awsS3";
 import Upload from "../../database/models/upload";
 
