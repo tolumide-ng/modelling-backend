@@ -8,9 +8,9 @@ export const validTargets = ["STEP", "STL", "IGES"];
 
 export const validateReceivedFile: RequestHandler = (req, res, next) => {
     if (!req.file) {
-        ResponseGenerator.sendError(
+        return ResponseGenerator.sendError(
             res,
-            405,
+            400,
             "Please provide a supported file type",
         );
     }
@@ -63,7 +63,7 @@ export const isIdValid: RequestHandler = async (req, res, next) => {
 };
 
 export const isValidTarget: RequestHandler = (req, res, next) => {
-    if (!validTargets.includes(req.params.target)) {
+    if (!validTargets.includes(req.params.target.toUpperCase())) {
         return ResponseGenerator.sendError(res, 415, "Unsupported Media Type");
     }
 

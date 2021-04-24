@@ -2,6 +2,14 @@ import { Utils } from "../utils";
 import { Response, RequestHandler } from "express";
 
 export class ResponseGenerator extends Utils {
+    static codeResponseDic = {
+        404: "Resource Not Found",
+        500: "Interval Server Error",
+        200: "Success",
+        415: "Unsupported Media Type",
+        400: "Bad Request",
+    };
+
     static sendError(res: Response, statusCode: number, message: string) {
         return res.status(statusCode).send({ message });
     }
