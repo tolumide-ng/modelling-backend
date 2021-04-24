@@ -8,9 +8,9 @@ export const validTargets = ["STEP", "STL", "IGES"];
 
 export const validateReceivedFile: RequestHandler = (req, res, next) => {
     if (!req.file) {
-        ResponseGenerator.sendError(
+        return ResponseGenerator.sendError(
             res,
-            405,
+            400,
             "Please provide a supported file type",
         );
     }
