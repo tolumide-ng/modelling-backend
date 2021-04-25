@@ -16,19 +16,11 @@ export const validateReceivedFile: RequestHandler = (req, res, next) => {
     }
 
     if (!req.is("multipart")) {
-        return ResponseGenerator.sendError(
-            res,
-            415,
-            "Unsupported Media Type: Please use multipart/form-data",
-        );
+        return ResponseGenerator.sendError(res, 415);
     }
 
     if (!["application/octet-stream"].includes(req.file.mimetype)) {
-        return ResponseGenerator.sendError(
-            res,
-            415,
-            "Unsupported Media Type: Only .shapr files are supported",
-        );
+        return ResponseGenerator.sendError(res, 415);
     }
 
     next();
@@ -64,7 +56,7 @@ export const isIdValid: RequestHandler = async (req, res, next) => {
 
 export const isValidTarget: RequestHandler = (req, res, next) => {
     if (!validTargets.includes(req.params.target.toUpperCase())) {
-        return ResponseGenerator.sendError(res, 415, "Unsupported Media Type");
+        return ResponseGenerator.sendError(res, 415);
     }
 
     next();

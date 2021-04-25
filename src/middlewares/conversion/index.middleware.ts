@@ -10,8 +10,7 @@ export class ConversionMiddleware {
         const sse = new SSEvents(req, res);
 
         req.on("close", () => {
-            console.log("shouldn't be here right>>>>>>>>>>>>_______");
-            sse.close();
+            return sse.close();
         });
 
         let percentageConverted = 0;
@@ -19,17 +18,9 @@ export class ConversionMiddleware {
         let timerId = setTimeout(function emitConversionState() {
             percentageConverted += ConversionMiddleware.INCREASE_BY;
 
-            console.log(
-                "W-------------W-------------W-------------W-------------",
-                percentageConverted,
-            );
-
             sse.send({ status: percentageConverted });
 
-            console.log("WELINGTON((((())))))WELINGTON");
-
             if (percentageConverted === 100) {
-                console.log("HERE UYET????????");
                 sse.close();
                 clearTimeout(timerId);
             }

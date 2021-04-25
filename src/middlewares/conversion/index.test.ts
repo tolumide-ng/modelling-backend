@@ -16,7 +16,7 @@ describe("Conversion Middleware", () => {
         req.on = sinon.stub().returns(req);
     });
 
-    it.only("Should stream file conversion progress", async () => {
+    it("Should stream file conversion progress", async () => {
         const spySSESend = sinon.spy(SSEvents.prototype, "send");
 
         ConversionMiddleware.CALL_INTERVAL = 200;
@@ -25,5 +25,6 @@ describe("Conversion Middleware", () => {
         ConversionMiddleware.convertFile(req, res);
 
         spySSESend.calledWith({ status: 50 });
+        spySSESend.restore();
     });
 });
