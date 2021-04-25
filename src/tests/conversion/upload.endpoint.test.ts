@@ -1,6 +1,6 @@
 import fs from "fs";
 import chai, { expect } from "chai";
-import sinon from "sinon";
+import sinon, { restore } from "sinon";
 import chaiHttp from "chai-http";
 import app from "../../index";
 import { config } from "dotenv";
@@ -31,9 +31,7 @@ describe("POST /upload", () => {
 
         fs.unlink("./file.txt", (err) => {});
 
-        expect(res.body.message).to.equal(
-            "Unsupported Media Type: Only .shapr files are supported",
-        );
+        expect(res.body.message).to.includes("Unsupported Media Type");
         expect(res.status).to.equal(415);
     });
 
@@ -78,17 +76,21 @@ describe("POST /upload", () => {
         stubUploadToAws.restore();
     });
 
-    it("Should successfully save a file upload a file", async () => {
+    it("Should successfully upload a file", async () => {
         const initialTotalUploads = await BaseRepository.findAll(Upload, {});
         expect(initialTotalUploads.length).to.equal(0);
 
         const awsInstance = new AmazonS3();
+
         const stubUploadToAws = sinon
-            .stub(awsInstance, "uploadOriginal")
+            .stub(AmazonS3.prototype, "uploadOriginal")
             .callsFake(
                 async (req: Request, res: Response, next: NextFunction) => {
-                    req.bucketUrl = "a fake url";
-                    return undefined;
+                    return new Promise((resolve, reject) => {
+                        req.bucketUrl = "FakeUrlForTheFileLocation";
+                        resolve;
+                        next();
+                    });
                 },
             );
 
@@ -103,8 +105,6 @@ describe("POST /upload", () => {
             .attach("convertFile", `./${fileName}`);
 
         fs.unlink(`./${fileName}`, (err) => {});
-
-        const fileId = res.body.data.fileId;
 
         const currentTotalUploads = await BaseRepository.findAll(Upload, {});
         expect(currentTotalUploads.length).to.equal(1);

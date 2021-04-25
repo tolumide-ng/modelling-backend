@@ -51,7 +51,7 @@ describe("PATCH /convert/:target/:id", () => {
         );
 
         expect(res.status).to.equal(415);
-        expect(res.body.message).to.equal("Unsupported Media Type");
+        expect(res.body.message).to.includes("Unsupported Media Type");
 
         const currentTotalUploads = await BaseRepository.findAll(Upload, {});
         expect(currentTotalUploads.length).to.equal(1);

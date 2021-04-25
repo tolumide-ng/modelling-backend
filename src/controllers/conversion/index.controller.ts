@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
-import { ConversionMiddleware } from ".";
+import { ConversionMiddleware } from "../../middlewares/conversion";
 import { AmazonS3 } from "../../helpers/awsS3";
 import Upload from "../../database/models/upload";
 
@@ -61,11 +61,7 @@ export class ConversionController extends ResponseGenerator {
                 fileId,
             });
         } catch (error) {
-            return ResponseGenerator.sendError(
-                res,
-                500,
-                "Internal Server Error",
-            );
+            return ResponseGenerator.sendError(res, 500);
         }
     }
 
@@ -94,20 +90,18 @@ export class ConversionController extends ResponseGenerator {
                 throw "";
             }
 
-            ConversionMiddleware.convertFile(req, res);
-
-            await BaseRepository.findAndUpdate(
+            const dt = await BaseRepository.findAndUpdate(
                 Upload,
                 { targetUrl: bucketUrl },
                 { fileId },
             );
+
+            ConversionMiddleware.convertFile(req, res);
         } catch (error) {
-            return ResponseGenerator.sendError(
-                res,
-                500,
-                "Internal Server Error",
-            );
+            return ResponseGenerator.sendError(res, 500);
         }
+
+        return;
     }
 
     static async downloadFile(req: Request, res: Response) {
@@ -122,11 +116,7 @@ export class ConversionController extends ResponseGenerator {
                 convertedFile: targetUrl,
             });
         } catch (error) {
-            return ResponseGenerator.sendError(
-                res,
-                500,
-                "Internal Server Error",
-            );
+            return ResponseGenerator.sendError(res, 500);
         }
     }
 }

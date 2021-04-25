@@ -1,17 +1,22 @@
-import { Utils } from "../utils";
 import { Response, RequestHandler } from "express";
+import { Utils } from "../utils";
+import { StatusCodeDef } from ".";
 
 export class ResponseGenerator extends Utils {
-    static codeResponseDic = {
+    static codeResponseDic: StatusCodeDef = {
         404: "Resource Not Found",
-        500: "Interval Server Error",
+        500: "Internal Server Error",
         200: "Success",
-        415: "Unsupported Media Type",
+        415: "Unsupported Media Type: Only multipart/form-data .shapr files are supported",
         400: "Bad Request",
     };
 
-    static sendError(res: Response, statusCode: number, message: string) {
-        return res.status(statusCode).send({ message });
+    static sendError(res: Response, statusCode: number, message: string = "") {
+        const responseMessage: string = message
+            ? message
+            : this.codeResponseDic[statusCode];
+
+        return res.status(statusCode).send({ message: responseMessage });
     }
 
     static sendSuccess(

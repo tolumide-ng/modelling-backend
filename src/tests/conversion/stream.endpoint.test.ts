@@ -6,10 +6,10 @@ import app from "../../index";
 import { config } from "dotenv";
 import { BaseRepository } from "../../baseRepository";
 import Upload from "../../database/models/upload";
-import { ResponseGenerator } from "../../helpers/responseGenerator";
-import { Request, Response } from "express";
-import { ConversionController } from "../../controllers/conversion";
+import { SSEvents } from "../../controllers/conversion";
 import { VALID_CONVERT_TARGETS, INVALID_CONVERT_TARGET } from "../utils";
+import { AmazonS3 } from "../../helpers/awsS3";
+import { ConversionMiddleware } from "../../middlewares/conversion";
 
 config();
 chai.use(chaiHttp);
@@ -32,29 +32,35 @@ describe("GET /stream/:id", () => {
     });
 
     it("should successfully convert the uploaded file", async () => {
-        const stubConversion = sinon
-            .stub(ConversionController, "streamConversion")
-            .callsFake(async (req: Request, res: Response) => {
-                return new Promise((resolve, reject) => {
-                    return ResponseGenerator.sendSuccess(res, 200, {
-                        message: "Success",
-                    });
-                });
-            });
-
+        // seed database with the file to be converted
         const TEST_FILE_NAME = "testFile.shapr";
-        const response = await BaseRepository.create(Upload, {
+        const createUpload = await BaseRepository.create(Upload, {
             fileUrl: "longFileUrlFromABucket",
             fileName: TEST_FILE_NAME,
             target: VALID_CONVERT_TARGETS[1],
         });
 
-        const { fileId } = await response.get({ plain: true });
+        // stubs aws uploadOriginal method
+        const stubAwsS3UploadConverted = sinon
+            .stub(AmazonS3.prototype, "uploadConverted")
+            .callsFake(async (message: any) => {
+                return new Promise((resolve, reject) => {
+                    resolve("fakeConvertedUrl");
+                });
+            });
+
+        ConversionMiddleware.CALL_INTERVAL = 10;
+        ConversionMiddleware.INCREASE_BY = 50;
+        const { fileId } = await createUpload.get({ plain: true });
+
+        const spySSESend = sinon.spy(SSEvents.prototype, "send");
 
         const res = await server().get(`/stream/${fileId}`);
 
         expect(res.status).to.equal(200);
+        spySSESend.calledWith({ status: 50 });
 
-        stubConversion.restore();
+        stubAwsS3UploadConverted.restore();
+        spySSESend.restore();
     });
 });
