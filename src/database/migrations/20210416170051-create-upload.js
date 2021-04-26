@@ -9,19 +9,19 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             fileUrl: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             fileId: {
                 type: Sequelize.UUID,
             },
             fileName: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             target: {
                 type: Sequelize.STRING,
             },
             targetUrl: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
             },
             createdAt: {
                 allowNull: false,

@@ -16,11 +16,11 @@ export default class Upload extends Model {
 }
 Upload.init(
     {
-        fileUrl: DataTypes.STRING,
+        fileUrl: DataTypes.TEXT,
         fileId: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
-        fileName: DataTypes.STRING,
+        fileName: DataTypes.TEXT,
         target: DataTypes.STRING,
-        targetUrl: DataTypes.STRING,
+        targetUrl: DataTypes.TEXT,
         createdAt: {
             type: DataTypes.DATE,
             defaultValue: new Date(),
