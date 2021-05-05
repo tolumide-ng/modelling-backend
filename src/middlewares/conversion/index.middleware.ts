@@ -1,34 +1,35 @@
-import { Request, Response } from "express";
-import { SSEvents } from "../../controllers/conversion";
+import { ResponseGenerator } from "../../helpers/responseGenerator";
+import multer from "multer";
+import { validateReceivedFile } from "../../validators/conversion/index.validator";
+import { isIdPresent, isIdValid, isValidTarget } from "../../routes/v1/conversion";
+import { AmazonS3 } from "../../helpers/awsS3/index.awsS3";
 
 export class ConversionMiddleware {
-    static CALL_INTERVAL = 3000;
+    static MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-    static INCREASE_BY = 20;
+    static mimeTypes = ["application/shapr", "image/shapr", "text/shapr"];
 
-    static convertFile(req: Request, res: Response) {
-        const sse = new SSEvents(req, res);
+    static uploadFile(file: string) {
+        const multerUpload = multer({
+            limits: { fileSize: this.MAX_FILE_SIZE, files: 1 },
+        }).single(file);
 
-        req.on("close", () => {
-            return sse.close();
-        });
+        const awsS3 = new AmazonS3();
 
-        let percentageConverted = 0;
+        return ResponseGenerator.composeHanlders(
+            multerUpload,
+            validateReceivedFile,
+            (req, res, next) => {
+                awsS3.uploadOriginal(req, res, next);
+            },
+        );
+    }
 
-        let timerId = setTimeout(function emitConversionState() {
-            percentageConverted += ConversionMiddleware.INCREASE_BY;
-
-            sse.send({ status: percentageConverted });
-
-            if (percentageConverted === 100) {
-                sse.close();
-                clearTimeout(timerId);
-            }
-
-            timerId = setTimeout(
-                emitConversionState,
-                ConversionMiddleware.CALL_INTERVAL,
-            );
-        }, 0);
+    static chooseTarget() {
+        return ResponseGenerator.composeHanlders(
+            isIdPresent,
+            isIdValid,
+            isValidTarget,
+        );
     }
 }

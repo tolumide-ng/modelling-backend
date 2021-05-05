@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
-import { ConversionMiddleware } from "../../middlewares/conversion";
+import { ConversionHelper } from "../../helpers/conversion";
 import { AmazonS3 } from "../../helpers/awsS3";
 import Upload from "../../database/models/upload";
 
@@ -90,13 +90,13 @@ export class ConversionController extends ResponseGenerator {
                 throw "";
             }
 
-            const dt = await BaseRepository.findAndUpdate(
+            ConversionHelper.convertFile(req, res);
+
+            await BaseRepository.findAndUpdate(
                 Upload,
                 { targetUrl: bucketUrl },
                 { fileId },
             );
-
-            ConversionMiddleware.convertFile(req, res);
         } catch (error) {
             return ResponseGenerator.sendError(res, 500);
         }

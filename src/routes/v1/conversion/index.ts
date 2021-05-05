@@ -1,4 +1,4 @@
-export * from "./index.middleware";
+export * from "../../../middlewares/conversion/index.middleware";
 export * from "./index.model";
-export * from "./index.validator";
+export * from "../../../validators/conversion/index.validator";
 export * from "./index.route";
