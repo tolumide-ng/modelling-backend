@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { FileUploadDef, FileTypes, FileParamsDef } from "./index.model";
+import { BucketDef, FileTypes, FileParamsDef } from "../index.model";
 
 import Aws from "aws-sdk";
-import { ResponseGenerator } from "../responseGenerator";
+import { ResponseGenerator } from "../../responseGenerator";
 
-export class AmazonS3 implements FileUploadDef {
+export class AmazonS3 implements BucketDef {
     static bucketUrl = String(`${process.env.AMAZON_S3_BUCKET}`) || "";
     static ACL = "public-read";
     static mimeType = "application/octet-stream";

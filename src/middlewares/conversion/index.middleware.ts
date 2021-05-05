@@ -6,7 +6,7 @@ import {
     isIdValid,
     isValidTarget,
 } from "../../validators/conversion";
-import { AmazonS3 } from "../../helpers/awsS3/index.awsS3";
+import { AmazonS3 } from "../../helpers/bucket/awsS3/index.awsS3";
 
 export class ConversionMiddleware {
     static MAX_FILE_SIZE = 5 * 1024 * 1024;

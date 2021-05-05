@@ -8,7 +8,7 @@ import { BaseRepository } from "../../baseRepository";
 import Upload from "../../database/models/upload";
 import { SSEvents } from "../../controllers/conversion";
 import { VALID_CONVERT_TARGETS, INVALID_CONVERT_TARGET } from "../utils";
-import { AmazonS3 } from "../../helpers/awsS3";
+import { AmazonS3 } from "../../helpers/bucket/awsS3";
 import { ConversionHelper } from "../../helpers/conversion";
 
 config();

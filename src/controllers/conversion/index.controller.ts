@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
 import { ConversionHelper } from "../../helpers/conversion";
-import { AmazonS3 } from "../../helpers/awsS3";
+import { AmazonS3 } from "../../helpers/bucket/awsS3";
 import Upload from "../../database/models/upload";
 
 export class ConversionController extends ResponseGenerator {
