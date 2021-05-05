@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { SSEvents } from "../../controllers/conversion";
+import { SSEvents } from "../../events/conversion";
 
 export class ConversionHelper {
     static CALL_INTERVAL = 3000;

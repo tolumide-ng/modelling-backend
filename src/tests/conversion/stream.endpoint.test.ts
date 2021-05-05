@@ -1,4 +1,3 @@
-import fs from "fs";
 import chai, { expect } from "chai";
 import sinon from "sinon";
 import chaiHttp from "chai-http";
@@ -6,7 +5,7 @@ import app from "../../index";
 import { config } from "dotenv";
 import { BaseRepository } from "../../baseRepository";
 import Upload from "../../database/models/upload";
-import { SSEvents } from "../../controllers/conversion";
+import { SSEvents } from "../../events/conversion";
 import { VALID_CONVERT_TARGETS, INVALID_CONVERT_TARGET } from "../utils";
 import { AmazonS3 } from "../../helpers/bucket/awsS3";
 import { ConversionHelper } from "../../helpers/conversion";

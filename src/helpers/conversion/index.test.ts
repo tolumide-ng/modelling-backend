@@ -1,8 +1,8 @@
 import "mocha";
 import sinon from "sinon";
 import { Response, Request } from "express";
-import { SSEvents } from "../../controllers/conversion";
-import { ConversionHelper } from ".";
+import { SSEvents } from "../../events/conversion";
+import { ConversionHelper } from "../conversion";
 
 describe("Conversion Middleware", () => {
     const req: Request = {} as Request;

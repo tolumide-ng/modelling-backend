@@ -79,6 +79,8 @@ export class ConversionController extends ResponseGenerator {
 
             const targetName = `${fileName}-${id}.${target}`;
 
+            ConversionHelper.convertFile(req, res);
+
             const fileContent = "If you ever need a reason to smile...";
 
             const bucketUrl = await bucketService.uploadConverted(
@@ -89,8 +91,6 @@ export class ConversionController extends ResponseGenerator {
             if (!bucketUrl) {
                 throw "";
             }
-
-            ConversionHelper.convertFile(req, res);
 
             await BaseRepository.findAndUpdate(
                 Upload,
