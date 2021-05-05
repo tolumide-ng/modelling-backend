@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { ConversionMiddleware, isIdValid } from ".";
+import { ConversionMiddleware } from "../../../middlewares/conversion";
+import { isIdValid } from "../../../validators/conversion";
 import { ConversionController } from "../../../controllers/conversion";
 
 const router = Router();

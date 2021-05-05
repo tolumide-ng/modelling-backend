@@ -1,7 +1,11 @@
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import multer from "multer";
 import { validateReceivedFile } from "../../validators/conversion/index.validator";
-import { isIdPresent, isIdValid, isValidTarget } from "../../routes/v1/conversion";
+import {
+    isIdPresent,
+    isIdValid,
+    isValidTarget,
+} from "../../validators/conversion";
 import { AmazonS3 } from "../../helpers/awsS3/index.awsS3";
 
 export class ConversionMiddleware {
