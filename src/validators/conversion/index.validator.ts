@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
-import { BaseRepository } from "../../../baseRepository";
-import { ResponseGenerator } from "../../../helpers/responseGenerator";
+import { BaseRepository } from "../../baseRepository";
+import { ResponseGenerator } from "../../helpers/responseGenerator";
 
-import Upload from "../../../database/models/upload";
+import Upload from "../../database/models/upload";
 
 export const validTargets = ["STEP", "STL", "IGES"];
 

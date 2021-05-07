@@ -1,4 +1,3 @@
-import fs from "fs";
 import chai, { expect } from "chai";
 import sinon from "sinon";
 import chaiHttp from "chai-http";
@@ -6,10 +5,10 @@ import app from "../../index";
 import { config } from "dotenv";
 import { BaseRepository } from "../../baseRepository";
 import Upload from "../../database/models/upload";
-import { SSEvents } from "../../controllers/conversion";
+import { SSEvents } from "../../events/conversion";
 import { VALID_CONVERT_TARGETS, INVALID_CONVERT_TARGET } from "../utils";
-import { AmazonS3 } from "../../helpers/awsS3";
-import { ConversionMiddleware } from "../../middlewares/conversion";
+import { AmazonS3 } from "../../helpers/bucket/awsS3";
+import { ConversionHelper } from "../../helpers/conversion";
 
 config();
 chai.use(chaiHttp);
@@ -49,8 +48,8 @@ describe("GET /stream/:id", () => {
                 });
             });
 
-        ConversionMiddleware.CALL_INTERVAL = 10;
-        ConversionMiddleware.INCREASE_BY = 50;
+        ConversionHelper.CALL_INTERVAL = 10;
+        ConversionHelper.INCREASE_BY = 50;
         const { fileId } = await createUpload.get({ plain: true });
 
         const spySSESend = sinon.spy(SSEvents.prototype, "send");

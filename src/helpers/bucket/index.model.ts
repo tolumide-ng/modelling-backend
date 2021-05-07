@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { S3 } from "aws-sdk";
 
-export interface FileUploadDef {
+export interface BucketDef {
     uploadOriginal(req: Request, res: Response, next: NextFunction): void;
 
     uploadConverted(

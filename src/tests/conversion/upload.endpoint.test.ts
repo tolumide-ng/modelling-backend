@@ -7,7 +7,7 @@ import { config } from "dotenv";
 import { BaseRepository } from "../../baseRepository";
 import Upload from "../../database/models/upload";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
-import { AmazonS3 } from "../../helpers/awsS3";
+import { AmazonS3 } from "../../helpers/bucket/awsS3";
 import { Request, Response, NextFunction } from "express";
 
 config();

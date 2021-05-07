@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { FileUploadDef, FileTypes, FileParamsDef } from "./index.model";
+import { BucketDef, FileTypes, FileParamsDef } from "../index.model";
 
 import Aws from "aws-sdk";
-import { ResponseGenerator } from "../responseGenerator";
+import { ResponseGenerator } from "../../responseGenerator";
 
-export class AmazonS3 implements FileUploadDef {
+export class AmazonS3 implements BucketDef {
     static bucketUrl = String(`${process.env.AMAZON_S3_BUCKET}`) || "";
     static ACL = "public-read";
     static mimeType = "application/octet-stream";
@@ -37,13 +37,10 @@ export class AmazonS3 implements FileUploadDef {
                 `${uuidv4()}-${req.file.originalname}`,
                 req.file.buffer,
             );
-            await this.bucketService
-                .upload(params)
-                .promise()
-                .then((data) => {
-                    req.bucketUrl = data.Location;
-                    next();
-                });
+
+            const response = await this.bucketService.upload(params).promise();
+            req.bucketUrl = response.Location;
+            next();
         } catch (error) {
             return ResponseGenerator.sendError(
                 res,
@@ -53,24 +50,18 @@ export class AmazonS3 implements FileUploadDef {
         }
     }
 
-    uploadConverted(
+    async uploadConverted(
         file: FileTypes,
         desiredName: string,
     ): Promise<string | undefined> {
         let bucketUrl: string | undefined = undefined;
 
-        return new Promise((res, rej) => {
+        try {
             const params = this.generateParams(desiredName, file);
-            this.bucketService
-                .upload(params)
-                .promise()
-                .then((data) => {
-                    bucketUrl = data.Location;
-                    return res(bucketUrl);
-                })
-                .catch(() => {
-                    rej(bucketUrl);
-                });
-        });
+            const response = await this.bucketService.upload(params).promise();
+            bucketUrl = response.Location;
+        } catch (error) {}
+
+        return bucketUrl;
     }
 }

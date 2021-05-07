@@ -1,8 +1,8 @@
 import "mocha";
 import sinon from "sinon";
 import { Response, Request } from "express";
-import { SSEvents } from "../../controllers/conversion";
-import { ConversionMiddleware } from ".";
+import { SSEvents } from "../../events/conversion";
+import { ConversionHelper } from "../conversion";
 
 describe("Conversion Middleware", () => {
     const req: Request = {} as Request;
@@ -19,10 +19,10 @@ describe("Conversion Middleware", () => {
     it("Should stream file conversion progress", async () => {
         const spySSESend = sinon.spy(SSEvents.prototype, "send");
 
-        ConversionMiddleware.CALL_INTERVAL = 200;
-        ConversionMiddleware.INCREASE_BY = 50;
+        ConversionHelper.CALL_INTERVAL = 200;
+        ConversionHelper.INCREASE_BY = 50;
 
-        ConversionMiddleware.convertFile(req, res);
+        ConversionHelper.convertFile(req, res);
 
         spySSESend.calledWith({ status: 50 });
         spySSESend.restore();

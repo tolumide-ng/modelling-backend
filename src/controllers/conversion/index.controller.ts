@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { ResponseGenerator } from "../../helpers/responseGenerator";
 import { BaseRepository } from "../../baseRepository";
-import { ConversionMiddleware } from "../../middlewares/conversion";
-import { AmazonS3 } from "../../helpers/awsS3";
+import { ConversionHelper } from "../../helpers/conversion";
+import { AmazonS3 } from "../../helpers/bucket/awsS3";
 import Upload from "../../database/models/upload";
 
 export class ConversionController extends ResponseGenerator {
@@ -79,6 +79,8 @@ export class ConversionController extends ResponseGenerator {
 
             const targetName = `${fileName}-${id}.${target}`;
 
+            ConversionHelper.convertFile(req, res);
+
             const fileContent = "If you ever need a reason to smile...";
 
             const bucketUrl = await bucketService.uploadConverted(
@@ -90,13 +92,11 @@ export class ConversionController extends ResponseGenerator {
                 throw "";
             }
 
-            const dt = await BaseRepository.findAndUpdate(
+            await BaseRepository.findAndUpdate(
                 Upload,
                 { targetUrl: bucketUrl },
                 { fileId },
             );
-
-            ConversionMiddleware.convertFile(req, res);
         } catch (error) {
             return ResponseGenerator.sendError(res, 500);
         }
